@@ -1,0 +1,27 @@
+http:
+  # Add the router
+  routers:
+    router0:
+      service: "auroral-agent"
+      rule: "Host(`localhost`) && PathPrefix(`/api`) || Host(`localhost`) && PathPrefix(`/docs`)"
+      entryPoints:
+        - web
+    router1:
+      service: "auroral-agent"
+      rule: "Host(`localhost`) && PathPrefix(`/`)"
+      entryPoints:
+        - web
+      middlewares:
+        - docs-prefix
+  middlewares:
+    docs-prefix:
+      addPrefix:
+        prefix: "/docs/"
+
+  # Add the service
+  services:
+    auroral-agent:
+     loadBalancer:
+        servers:
+          - url: "http://auroral-agent:4000/"
+    
